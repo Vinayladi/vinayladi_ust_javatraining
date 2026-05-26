@@ -1,0 +1,118 @@
+import java.util.*;
+import java.util.stream.*;
+
+class Product {
+
+    private int productId;
+    private String name;
+    private double price;
+    private boolean inStock;
+    private double discountPercentage;
+
+    // Parameterized Constructor
+    public Product(int productId, String name, double price,
+                   boolean inStock, double discountPercentage) {
+
+        this.productId = productId;
+        this.name = name;
+        this.price = price;
+        this.inStock = inStock;
+        this.discountPercentage = discountPercentage;
+    }
+
+    // Getter Methods
+    public int getProductId() {
+        return productId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public boolean getInStock() {
+        return inStock;
+    }
+
+    public double getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId=" + productId +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", inStock=" + inStock +
+                ", discountPercentage=" + discountPercentage +
+                '}';
+    }
+
+    // Main Method
+    public static void main(String[] args) {
+
+        ArrayList<Product> products = new ArrayList<>(
+                Arrays.asList(
+
+                        new Product(101, "Laptop",
+                                50000, true, 10),
+
+                        new Product(102, "Mobile",
+                                25000, true, 5),
+
+                        new Product(103, "Headphones",
+                                2000, false, 15),
+
+                        new Product(104, "Keyboard",
+                                1500, true, 8),
+
+                        new Product(105, "Mouse",
+                                800, true, 12)
+                )
+        );
+
+        // Remove out-of-stock products
+        List<Product> inStockProducts = products.stream()
+                .filter(p -> p.getInStock())
+                .toList();
+
+
+       //Apply discount on products 
+
+       List<Product> updatedProducts = inStockProducts.stream()
+        .map(p -> {
+
+            double finalPrice = p.getPrice() -
+                    (p.getPrice() * p.getDiscountPercentage() / 100);
+
+            p.setPrice(finalPrice);
+
+            return p;
+        })
+        .toList();
+
+      //Calculate total cart amount 
+      double totalAmount = updatedProducts.stream()
+        .mapToDouble(p -> p.getPrice())
+        .sum();
+
+    //Find most expensive product 
+    Product expensiveProduct = updatedProducts.stream()
+        .max(Comparator.comparing(p -> p.getPrice()))
+        .get();
+
+  // Sort products by price 
+   List<Product> sortedProducts = updatedProducts.stream()
+        .sorted(Comparator.comparing(p -> p.getPrice()))
+        .toList();
+
+//Display products with final discounted price 
+
+   updatedProducts.forEach(p -> System.out.println(p));
+      
+    }
+}
